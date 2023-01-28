@@ -1,63 +1,56 @@
-const Node = (data) => {
-  children = [];
-  return { data, children };
-};
-
-const Knight = (coords = [0, 0]) => {
-  const possibleMoves = (start = coords) => {
-    const node = Node(start);
-    const x = node.data[0];
-    const y = node.data[1];
-
-    const combinations = [
-      [x + 1, y + 2],
-      [x + 2, y + 1],
-      [x + 2, y - 1],
-      [x + 1, y - 2],
-      [x - 1, y - 2],
-      [x - 2, y - 1],
-      [x - 2, y + 1],
-      [x - 1, y + 2],
+const Knight = () => {
+  const moves = (start, end) => {
+    let visited = new Set();
+    let queue = [[start]];
+    let directions = [
+      [2, 1],
+      [2, -1],
+      [-2, 1],
+      [-2, -1],
+      [1, 2],
+      [1, -2],
+      [-1, 2],
+      [-1, -2],
     ];
 
-    for (const combination of combinations) {
-      if (combination[0] >= 0 && combination[1] >= 0)
-        node.children.push(combination);
+    while (queue.length > 0) {
+      let path = queue.shift();
+      console.log('path ' + path);
+      let current = path[path.length - 1];
+      console.log('current ' + current);
+
+      if (current[0] === end[0] && current[1] === end[1]) {
+        return pathDisplay(path);
+      }
+
+      for (let direction of directions) {
+        let x = current[0] + direction[0];
+        let y = current[1] + direction[1];
+
+        if (x < 0 || x > 7 || y < 0 || y > 7) continue;
+
+        let newPosition = [x, y];
+
+        if (visited.has(newPosition)) continue;
+
+        visited.add(newPosition);
+        queue.push(path.concat([newPosition]));
+      }
     }
 
-    return node;
+    return 'No path found';
   };
 
-  const levelOrder = (start, end) => {
-    const node = Node(start);
-    let result = [];
-    let queue = [];
-    queue.push(node);
+  return { moves };
+};
 
-    // console.log(queue[0].data);
-    // console.log(node.data)
-    // console.log(end)
-
-    if (end.toString() === node.data.toString()) return result;
-
-    queue.push(possibleMoves(start));
-    console.log(queue);
-
-    // while (queue.length !== 0) {
-    //   let current = queue.shift();
-    //   result.push(current.data);
-
-    // }
-
-  };
-
-  const moves = (start, end) => {};
-
-  return { coords, possibleMoves, levelOrder };
+const pathDisplay = (path) => {
+  console.log(`You made it in ${path.length} move(s)! Here's your path:`);
+  for (const move of path) {
+    console.log(move);
+  }
 };
 
 const myKnight = Knight();
 
-console.log(myKnight.possibleMoves());
-console.log(myKnight.possibleMoves([3, 3]));
-console.log(myKnight.levelOrder([0, 0], [3, 3]));
+myKnight.moves([0, 0], [3, 3]);
