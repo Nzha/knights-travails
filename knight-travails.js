@@ -15,13 +15,9 @@ const Knight = () => {
 
     while (queue.length > 0) {
       let path = queue.shift();
-      console.log('path ' + path);
       let current = path[path.length - 1];
-      console.log('current ' + current);
 
-      if (current[0] === end[0] && current[1] === end[1]) {
-        return pathDisplay(path);
-      }
+      if (current[0] === end[0] && current[1] === end[1]) return consoleDisplay(path);
 
       for (let direction of directions) {
         let x = current[0] + direction[0];
@@ -37,14 +33,12 @@ const Knight = () => {
         queue.push(path.concat([newPosition]));
       }
     }
-
     return 'No path found';
   };
-
   return { moves };
 };
 
-const pathDisplay = (path) => {
+const consoleDisplay = (path) => {
   console.log(`You made it in ${path.length} move(s)! Here's your path:`);
   for (const move of path) {
     console.log(move);
